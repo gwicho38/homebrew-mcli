@@ -11,7 +11,20 @@ class Mcli < Formula
   depends_on "python@3.11"
 
   def install
-    virtualenv_install_with_resources
+    # Create virtualenv in libexec
+    venv = virtualenv_create(libexec, "python3.11")
+
+    # Install package with all dependencies from PyPI
+    system libexec/"bin/pip", "install", "--upgrade", "pip", "wheel"
+    system libexec/"bin/pip", "install", "mcli-framework==7.0.4"
+
+    # Create wrapper scripts
+    (bin/"mcli").write_env_script(libexec/"bin/mcli", PATH: "#{libexec}/bin:$PATH")
+    (bin/"mcli-backtest").write_env_script(libexec/"bin/mcli-backtest", PATH: "#{libexec}/bin:$PATH")
+    (bin/"mcli-dashboard").write_env_script(libexec/"bin/mcli-dashboard", PATH: "#{libexec}/bin:$PATH")
+    (bin/"mcli-optimize").write_env_script(libexec/"bin/mcli-optimize", PATH: "#{libexec}/bin:$PATH")
+    (bin/"mcli-serve").write_env_script(libexec/"bin/mcli-serve", PATH: "#{libexec}/bin:$PATH")
+    (bin/"mcli-train").write_env_script(libexec/"bin/mcli-train", PATH: "#{libexec}/bin:$PATH")
   end
 
   test do
