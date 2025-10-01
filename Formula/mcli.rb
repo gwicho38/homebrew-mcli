@@ -11,19 +11,11 @@ class Mcli < Formula
   depends_on "python@3.11"
 
   def install
-    # Create virtualenv
-    venv = virtualenv_create(libexec, "python3.11")
-
-    # Install mcli-framework and all dependencies from PyPI
-    system libexec/"bin/pip", "install", "--upgrade", "pip"
-    system libexec/"bin/pip", "install", buildpath
-
-    # Link executables
-    bin.install_symlink Dir["#{libexec}/bin/mcli*"]
+    virtualenv_install_with_resources
   end
 
   test do
-    system "#{bin}/mcli", "model", "--help"
+    system bin/"mcli", "model", "--help"
     assert_match "Model management commands", shell_output("#{bin}/mcli model --help")
   end
 end
